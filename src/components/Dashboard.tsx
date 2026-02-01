@@ -286,6 +286,8 @@ export default function Dashboard() {
 
   const totalCantidadValue = totalCantidad(presupuesto.bebidas)
   const totalGastoValue = totalGasto(presupuesto.bebidas)
+  const presupuestoObjetivoValue = Number(presupuesto.presupuestoObjetivo || 0)
+  const cantidadInvitadosValue = Number(presupuesto.cantidadInvitados || 0)
 
   if (isLoading) {
     return (
@@ -391,12 +393,12 @@ export default function Dashboard() {
                 value={presupuesto.presupuestoObjetivo}
                 onChange={(event) => {
                   const normalized = normalizeNumberInput(event.target.value)
-                  const value = Number(normalized || 0)
+                  const value = normalized === '' ? '' : Number(normalized)
                   setPresupuesto({ ...presupuesto, presupuestoObjetivo: value })
-                  if (presupuestoId) {
+                  if (presupuestoId && normalized !== '') {
                     supabase
                       .from('presupuestos')
-                      .update({ presupuesto_objetivo: value })
+                      .update({ presupuesto_objetivo: Number(normalized) })
                       .eq('id', presupuestoId)
                       .then(({ error: updateError }) => {
                         if (updateError) setError('No se pudo actualizar el presupuesto.')
@@ -416,12 +418,12 @@ export default function Dashboard() {
                 value={presupuesto.cantidadInvitados}
                 onChange={(event) => {
                   const normalized = normalizeNumberInput(event.target.value)
-                  const value = Number(normalized || 0)
+                  const value = normalized === '' ? '' : Number(normalized)
                   setPresupuesto({ ...presupuesto, cantidadInvitados: value })
-                  if (presupuestoId) {
+                  if (presupuestoId && normalized !== '') {
                     supabase
                       .from('presupuestos')
-                      .update({ cantidad_invitados: value })
+                      .update({ cantidad_invitados: Number(normalized) })
                       .eq('id', presupuestoId)
                       .then(({ error: updateError }) => {
                         if (updateError) setError('No se pudo actualizar invitados.')
@@ -445,8 +447,8 @@ export default function Dashboard() {
       <ResumenTotal
         totalCantidad={totalCantidadValue}
         totalGasto={totalGastoValue}
-        presupuestoObjetivo={presupuesto.presupuestoObjetivo}
-        cantidadInvitados={presupuesto.cantidadInvitados}
+        presupuestoObjetivo={presupuestoObjetivoValue}
+        cantidadInvitados={cantidadInvitadosValue}
       />
 
       <section className="grid gap-4 sm:gap-6 xl:grid-cols-[340px_1fr]">

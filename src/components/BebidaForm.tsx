@@ -11,6 +11,11 @@ export interface BebidaFormValues {
   comentarios: string
 }
 
+type BebidaFormDraft = Omit<BebidaFormValues, 'cantidad' | 'precioUnitario'> & {
+  cantidad: number | ''
+  precioUnitario: number | ''
+}
+
 interface BebidaFormProps {
   initialValue?: Bebida
   onSubmit: (values: BebidaFormValues) => void
@@ -25,7 +30,7 @@ const CATEGORIAS: CategoriaBebida[] = [
   'otro',
 ]
 
-const DEFAULT_VALUES: BebidaFormValues = {
+const DEFAULT_VALUES: BebidaFormDraft = {
   nombre: '',
   categoria: 'destilado',
   cantidad: 1,
@@ -35,7 +40,7 @@ const DEFAULT_VALUES: BebidaFormValues = {
 }
 
 export default function BebidaForm({ initialValue, onSubmit, onCancel }: BebidaFormProps) {
-  const [form, setForm] = useState<BebidaFormValues>(() =>
+  const [form, setForm] = useState<BebidaFormDraft>(() =>
     initialValue
       ? {
           nombre: initialValue.nombre,
@@ -48,7 +53,7 @@ export default function BebidaForm({ initialValue, onSubmit, onCancel }: BebidaF
       : DEFAULT_VALUES,
   )
 
-  function updateField<T extends keyof BebidaFormValues>(key: T, value: BebidaFormValues[T]) {
+  function updateField<T extends keyof BebidaFormDraft>(key: T, value: BebidaFormDraft[T]) {
     setForm((prev) => ({ ...prev, [key]: value }))
   }
 
@@ -57,7 +62,13 @@ export default function BebidaForm({ initialValue, onSubmit, onCancel }: BebidaF
       className="rounded-[var(--r-lg)] border border-[hsl(var(--border))] bg-[hsl(var(--surface))] p-4 shadow-[0_2px_8px_-6px_rgba(15,23,42,0.12)] sm:p-5"
       onSubmit={(event) => {
         event.preventDefault()
-        onSubmit(form)
+        const cantidadValue = form.cantidad === '' ? 1 : form.cantidad
+        const precioUnitarioValue = form.precioUnitario === '' ? 0 : form.precioUnitario
+        onSubmit({
+          ...form,
+          cantidad: cantidadValue,
+          precioUnitario: precioUnitarioValue,
+        })
       }}
     >
       <div className="flex items-center justify-between">
@@ -103,7 +114,7 @@ export default function BebidaForm({ initialValue, onSubmit, onCancel }: BebidaF
             value={form.cantidad}
             onChange={(event) => {
               const normalized = normalizeNumberInput(event.target.value)
-              updateField('cantidad', Number(normalized || 0))
+              updateField('cantidad', normalized === '' ? '' : Number(normalized))
             }}
           />
         </label>
@@ -117,7 +128,7 @@ export default function BebidaForm({ initialValue, onSubmit, onCancel }: BebidaF
             value={form.precioUnitario}
             onChange={(event) => {
               const normalized = normalizeNumberInput(event.target.value, { allowDecimal: true })
-              updateField('precioUnitario', Number(normalized || 0))
+              updateField('precioUnitario', normalized === '' ? '' : Number(normalized))
             }}
           />
         </label>

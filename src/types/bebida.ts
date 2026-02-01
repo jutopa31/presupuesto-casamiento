@@ -18,8 +18,8 @@ export interface Bebida {
 
 export interface Presupuesto {
   bebidas: Bebida[]
-  presupuestoObjetivo: number
+  presupuestoObjetivo: number | ''
   moneda: 'ARS' | 'USD'
   fechaEvento: string | null
-  cantidadInvitados: number
+  cantidadInvitados: number | ''
 }
