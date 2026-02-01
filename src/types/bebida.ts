@@ -13,13 +13,13 @@ export interface Bebida {
   precioUnitario: number
   lugarPrecio: string
   comentarios: string
-  fechaActualizacion: Date
+  fechaActualizacion: string
 }
 
 export interface Presupuesto {
   bebidas: Bebida[]
   presupuestoObjetivo: number
   moneda: 'ARS' | 'USD'
-  fechaEvento: Date
+  fechaEvento: string | null
   cantidadInvitados: number
 }

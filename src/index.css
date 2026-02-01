@@ -7,25 +7,36 @@
 @layer base {
   :root {
     color-scheme: light;
-    --bone: #f7f4ef;
-    --ink: #1a1a1a;
-    --muted: #8a857d;
-    --line: #d9d4cb;
-    --panel: #fbfaf8;
-    --salvia: #7e8f78;
-    --vino: #7a3e3e;
+    --bg: 0 0% 100%;
+    --surface: 0 0% 98%;
+    --surface-2: 0 0% 96%;
+    --text: 220 15% 12%;
+    --text-muted: 220 9% 40%;
+    --border: 220 10% 90%;
+    --accent: 220 85% 55%;
+    --accent-foreground: 0 0% 100%;
+    --success: 150 60% 40%;
+    --warning: 38 90% 50%;
+    --danger: 0 75% 55%;
+    --ring: 220 85% 55%;
+    --r-sm: 12px;
+    --r-md: 16px;
+    --r-lg: 20px;
+    --dur-1: 140ms;
+    --dur-2: 220ms;
+    --ease-soft: cubic-bezier(.2,.8,.2,1);
+    --ease-in: cubic-bezier(.2,.9,.2,1);
+    --ease-out: cubic-bezier(.4,0,1,1);
   }
 
   body {
     @apply text-slate-900;
-    background-color: var(--bone);
-    background-image:
-      radial-gradient(circle at 12% 12%, rgba(126, 143, 120, 0.08), transparent 40%),
-      radial-gradient(circle at 88% 8%, rgba(122, 62, 62, 0.08), transparent 45%),
-      radial-gradient(circle at 75% 85%, rgba(26, 26, 26, 0.05), transparent 42%);
+    background-color: hsl(var(--bg));
     font-family: 'Manrope', system-ui, -apple-system, sans-serif;
     min-height: 100vh;
     position: relative;
+    font-size: 16px;
+    line-height: 1.6;
   }
 
   body::before {
@@ -33,11 +44,8 @@
     position: fixed;
     inset: 0;
     pointer-events: none;
-    background-image:
-      radial-gradient(rgba(26, 26, 26, 0.06) 1px, transparent 1px),
-      radial-gradient(rgba(26, 26, 26, 0.04) 1px, transparent 1px);
-    background-size: 22px 22px, 44px 44px;
-    background-position: 0 0, 11px 11px;
+    background-image: radial-gradient(rgba(15, 23, 42, 0.04) 1px, transparent 1px);
+    background-size: 26px 26px;
     z-index: -1;
   }
 }
@@ -54,5 +62,35 @@
 @media (min-width: 640px) {
   .app-shell {
     padding: 2.5rem 0 4rem;
+  }
+}
+
+.fade-in {
+  animation: fadeIn var(--dur-2) var(--ease-in) both;
+}
+
+.press {
+  transition: transform var(--dur-1) var(--ease-soft);
+}
+
+.press:active {
+  transform: scale(.98);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
   }
 }
