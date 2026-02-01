@@ -10,6 +10,11 @@ import { totalGastoPendiente, totalGastoReal } from '../utils/calculations'
 import { normalizeNumberInput } from '../utils/numberInput'
 import { supabase } from '../utils/supabaseClient'
 
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>
+  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>
+}
+
 const DEFAULT_PRESUPUESTO: Presupuesto = {
   bebidas: [],
   presupuestoObjetivo: 0,
@@ -47,6 +52,30 @@ export default function Dashboard() {
   const [filter, setFilter] = useState<'todas' | CategoriaBebida>('todas')
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalComentario, setModalComentario] = useState('')
+  const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null)
+  const [isInstalling, setIsInstalling] = useState(false)
+
+  useEffect(() => {
+    function handleBeforeInstallPrompt(event: Event) {
+      event.preventDefault()
+      setInstallPrompt(event as BeforeInstallPromptEvent)
+    }
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
+    }
+  }, [])
+
+  async function handleInstallClick() {
+    if (!installPrompt || isInstalling) return
+    setIsInstalling(true)
+    await installPrompt.prompt()
+    await installPrompt.userChoice
+    setIsInstalling(false)
+    setInstallPrompt(null)
+  }
 
   useEffect(() => {
     let isMounted = true
@@ -387,6 +416,16 @@ export default function Dashboard() {
               {isSigningIn ? 'Iniciando sesión...' : 'Ingresar'}
             </button>
           </form>
+          {installPrompt ? (
+            <button
+              className="mt-3 self-center rounded-[var(--r-md)] border border-[hsl(var(--border))] bg-white px-3 py-1.5 text-[10px] font-semibold text-[hsl(var(--text-muted))] transition hover:border-[hsl(var(--text))] hover:text-[hsl(var(--text))] disabled:cursor-not-allowed disabled:opacity-70 sm:text-xs"
+              type="button"
+              onClick={handleInstallClick}
+              disabled={isInstalling}
+            >
+              {isInstalling ? 'Instalando...' : 'Instalar app'}
+            </button>
+          ) : null}
           {error ? (
             <p className="mt-3 text-xs text-red-600">{error}</p>
           ) : null}
@@ -467,14 +506,25 @@ export default function Dashboard() {
             </label>
           </div>
         </div>
-        <div className="mt-3 flex justify-end">
+        <div className="mt-3 flex flex-wrap items-center justify-end gap-2">
+          {installPrompt ? (
+            <button
+              className="rounded-[var(--r-md)] border border-[hsl(var(--border))] bg-white px-3 py-1.5 text-[10px] font-semibold text-[hsl(var(--text-muted))] transition hover:border-[hsl(var(--text))] hover:text-[hsl(var(--text))] disabled:cursor-not-allowed disabled:opacity-70 sm:text-xs"
+              type="button"
+              onClick={handleInstallClick}
+              disabled={isInstalling}
+            >
+              {isInstalling ? 'Instalando...' : 'Instalar app'}
+            </button>
+          ) : null}
           <button
             className="rounded-[var(--r-md)] border border-[hsl(var(--border))] bg-white px-3 py-1.5 text-[10px] font-semibold text-[hsl(var(--text-muted))] transition hover:border-[hsl(var(--text))] hover:text-[hsl(var(--text))] sm:text-xs"
             type="button"
             onClick={() => supabase.auth.signOut()}
           >
             Cerrar sesión
-          </button></div>
+          </button>
+        </div>
       </header>
 
       <ResumenTotal
