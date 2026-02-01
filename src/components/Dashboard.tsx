@@ -316,7 +316,8 @@ export default function Dashboard() {
                 return
               }
               setIsSendingLink(true)
-              const siteUrl = import.meta.env.VITE_SITE_URL || window.location.origin
+              const rawSiteUrl = import.meta.env.VITE_SITE_URL || window.location.origin
+              const siteUrl = rawSiteUrl.trim().replace(/\/+$/, '')
               const { error: signInError } = await supabase.auth.signInWithOtp({
                 email,
                 options: { emailRedirectTo: siteUrl },
@@ -357,20 +358,20 @@ export default function Dashboard() {
           {error}
         </div>
       ) : null}
-      <header className="rounded-[var(--r-lg)] border border-[hsl(var(--border))] bg-[hsl(var(--surface))] p-4 shadow-[0_4px_12px_-10px_rgba(15,23,42,0.15)] sm:p-6">
+      <header className="rounded-[var(--r-lg)] border border-[hsl(var(--border))] bg-[hsl(var(--surface))] p-4 shadow-[0_2px_8px_-6px_rgba(15,23,42,0.12)] sm:p-5">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div className="flex flex-col gap-2">
             <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[hsl(var(--text-muted))] sm:text-xs">
               Presupuesto de bebidas
             </p>
-            <h1 className="font-display text-2xl font-semibold text-[hsl(var(--text))] sm:text-3xl md:text-4xl">
+            <h1 className="font-display text-2xl font-semibold text-[hsl(var(--text))] sm:text-3xl">
               Presupuesto Casamiento
             </h1>
             <p className="max-w-xl text-xs text-[hsl(var(--text-muted))] sm:text-sm">
               Controla cantidades, precios y notas con un tablero claro y minimalista.
             </p>
           </div>
-          <div className="grid w-full gap-2 sm:grid-cols-2 sm:gap-3 lg:max-w-md">
+          <div className="grid w-full gap-2 sm:grid-cols-2 sm:gap-2 lg:max-w-md">
             <label className="flex flex-col gap-1 rounded-[var(--r-md)] border border-[hsl(var(--border))] bg-white px-3 py-2 shadow-[0_4px_12px_-10px_rgba(15,23,42,0.2)]">
               <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[hsl(var(--text-muted))]">
                 Presupuesto
@@ -423,7 +424,7 @@ export default function Dashboard() {
         </div>
         <div className="mt-3 flex justify-end">
           <button
-            className="rounded-full border border-[hsl(var(--border))] bg-white px-3 py-1.5 text-[10px] font-semibold text-[hsl(var(--text-muted))] transition hover:border-[hsl(var(--text))] hover:text-[hsl(var(--text))] sm:text-xs"
+            className="rounded-[var(--r-md)] border border-[hsl(var(--border))] bg-white px-3 py-1.5 text-[10px] font-semibold text-[hsl(var(--text-muted))] transition hover:border-[hsl(var(--text))] hover:text-[hsl(var(--text))] sm:text-xs"
             type="button"
             onClick={() => supabase.auth.signOut()}
           >
@@ -438,7 +439,7 @@ export default function Dashboard() {
         cantidadInvitados={presupuesto.cantidadInvitados}
       />
 
-      <section className="grid gap-4 sm:gap-6 xl:grid-cols-[360px_1fr]">
+      <section className="grid gap-4 sm:gap-6 xl:grid-cols-[340px_1fr]">
         <div className="flex flex-col gap-4">
           <BebidaForm
             key={editing?.id ?? 'nuevo'}
@@ -446,7 +447,7 @@ export default function Dashboard() {
             onSubmit={handleSubmit}
             onCancel={editing ? () => setEditing(null) : undefined}
           />
-          <div className="rounded-[var(--r-lg)] border border-[hsl(var(--border))] bg-[hsl(var(--surface))] p-3 shadow-[0_10px_26px_-22px_rgba(15,23,42,0.35)] sm:p-5">
+          <div className="rounded-[var(--r-lg)] border border-[hsl(var(--border))] bg-[hsl(var(--surface))] p-3 shadow-[0_2px_8px_-6px_rgba(15,23,42,0.12)] sm:p-4">
             <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[hsl(var(--text-muted))] sm:text-xs">
               Filtros
             </p>
@@ -454,7 +455,7 @@ export default function Dashboard() {
               {FILTROS.map((categoria) => (
                 <button
                   key={categoria}
-                  className={`press rounded-full border px-3 py-1 text-[10px] font-semibold transition duration-150 ease-[cubic-bezier(.2,.8,.2,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ring))] focus-visible:ring-offset-2 focus-visible:ring-offset-white sm:px-3 sm:py-1 sm:text-xs ${
+                  className={`press rounded-[var(--r-md)] border px-3 py-1 text-[10px] font-semibold transition duration-150 ease-[cubic-bezier(.2,.8,.2,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ring))] focus-visible:ring-offset-2 focus-visible:ring-offset-white sm:px-3 sm:py-1 sm:text-xs ${
                     filter === categoria
                       ? 'border-[hsl(var(--text))] bg-[hsl(var(--text))] text-white shadow-sm'
                       : 'border-[hsl(var(--border))] text-[hsl(var(--text-muted))] hover:border-[hsl(var(--text))] hover:text-[hsl(var(--text))]'
@@ -471,7 +472,7 @@ export default function Dashboard() {
 
         <div className="grid max-w-[760px] gap-3 sm:gap-4">
           {bebidasFiltradas.length === 0 ? (
-            <div className="rounded-[var(--r-lg)] border border-dashed border-[hsl(var(--border))] bg-[hsl(var(--surface))] p-6 text-center shadow-[0_14px_32px_-26px_rgba(15,23,42,0.4)] sm:p-10">
+            <div className="rounded-[var(--r-lg)] border border-dashed border-[hsl(var(--border))] bg-[hsl(var(--surface))] p-6 text-center shadow-[0_2px_8px_-6px_rgba(15,23,42,0.12)] sm:p-8">
               <p className="font-display text-xl font-semibold text-[hsl(var(--text))] sm:text-2xl">
                 Empieza tu lista
               </p>
