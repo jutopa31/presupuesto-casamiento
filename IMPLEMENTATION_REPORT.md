@@ -3,7 +3,7 @@
 Date: 2026-02-01
 
 ## Overview
-I initialized the project as a Vite + React 18 + TypeScript app, added Tailwind CSS and PWA support, and scaffolded the initial feature structure described in `PROJECT_PRESUPUESTO.md`. The goal was to leave a running baseline with the dashboard, forms, cards, and basic state management wired to `localStorage`.
+I initialized the project as a Vite + React 18 + TypeScript app, added Tailwind CSS and PWA support, and scaffolded the initial feature structure described in `PROJECT_PRESUPUESTO.md`. The goal was to leave a running baseline with the dashboard, forms, cards, Supabase persistence, and a calm ChatGPT-like UI.
 
 ## What I changed
 
@@ -47,20 +47,34 @@ Files:
 
 ### 5) Data model, storage, and calculations
 - Added strict TypeScript types for beverages and budget.
-- Added a reusable `useLocalStorage` hook to persist the app state.
 - Added calculation helpers for totals and delta.
+- Connected to Supabase for auth + persistence.
 
 Files:
 - `src/types/bebida.ts`
-- `src/hooks/useLocalStorage.ts`
 - `src/utils/calculations.ts`
+- `src/utils/supabaseClient.ts`
+
+### 6) UI system (ChatGPT-like)
+- Introduced neutral tokens, softer borders, reduced shadows, and calmer typography.
+- Unified focus rings and micro-press interactions for buttons.
+- Applied a compact, readable layout across cards, forms, and modal.
+
+Files:
+- `src/index.css`
+- `src/components/Dashboard.tsx`
+- `src/components/BebidaForm.tsx`
+- `src/components/BebidaCard.tsx`
+- `src/components/ResumenTotal.tsx`
+- `src/components/ComentarioModal.tsx`
 
 ## Functional behavior (current)
+- Email link auth via Supabase OTP.
 - Add and edit beverages (name, category, quantity, price, place, comments).
 - Delete beverages.
 - Filter by category.
 - Summary totals and delta vs. target.
-- Data persisted to `localStorage` under `presupuesto-casamiento`.
+- Data persisted to Supabase per user.
 - Notes modal shows comments from a selected beverage card.
 
 ## Commands I ran
@@ -75,4 +89,3 @@ Files:
   - `public/icons/icon-512.png`
 - If you want prettier formatting for numbers or currency, we can add a formatter utility.
 - If needed, I can extend this to include budget per guest, export, or history.
-
