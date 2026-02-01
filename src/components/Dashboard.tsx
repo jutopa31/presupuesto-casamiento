@@ -1,4 +1,5 @@
 ﻿import { useEffect, useMemo, useState } from 'react'
+import type { Session } from '@supabase/supabase-js'
 import BebidaCard from './BebidaCard'
 import BebidaForm from './BebidaForm'
 import type { BebidaFormValues } from './BebidaForm'
@@ -26,6 +27,9 @@ const FILTROS: Array<'todas' | CategoriaBebida> = [
 ]
 
 export default function Dashboard() {
+  const [session, setSession] = useState<Session | null>(null)
+  const [email, setEmail] = useState('')
+  const [isSendingLink, setIsSendingLink] = useState(false)
   const [presupuesto, setPresupuesto] = useState<Presupuesto>(DEFAULT_PRESUPUESTO)
   const [presupuestoId, setPresupuestoId] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -36,10 +40,36 @@ export default function Dashboard() {
   const [modalComentario, setModalComentario] = useState('')
 
   useEffect(() => {
+    let isMounted = true
+
+    supabase.auth.getSession().then(({ data }) => {
+      if (!isMounted) return
+      setSession(data.session)
+      setIsLoading(false)
+    })
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, next) => {
+      if (!isMounted) return
+      setSession(next)
+    })
+
+    return () => {
+      isMounted = false
+      subscription.unsubscribe()
+    }
+  }, [])
+
+  useEffect(() => {
     let isActive = true
     const presupuestoSlug = import.meta.env.VITE_PRESUPUESTO_SLUG ?? 'default'
 
     async function loadPresupuesto() {
+      if (!session?.user) {
+        setPresupuesto(DEFAULT_PRESUPUESTO)
+        setPresupuestoId(null)
+        return
+      }
+
       setIsLoading(true)
       setError(null)
 
@@ -47,9 +77,10 @@ export default function Dashboard() {
         .from('presupuestos')
         .select('*')
         .eq('slug', presupuestoSlug)
+        .eq('user_id', session.user.id)
         .single()
 
-      if (presupuestoError || !presupuestoRow) {
+      if (presupuestoError && presupuestoError.code !== 'PGRST116') {
         if (isActive) {
           setError('No se pudo cargar el presupuesto desde Supabase.')
           setIsLoading(false)
@@ -57,10 +88,34 @@ export default function Dashboard() {
         return
       }
 
+      let presupuestoActual = presupuestoRow
+
+      if (!presupuestoActual) {
+        const { data: created, error: createError } = await supabase
+          .from('presupuestos')
+          .insert({
+            slug: presupuestoSlug,
+            user_id: session.user.id,
+            presupuesto_objetivo: 0,
+            moneda: 'ARS',
+            cantidad_invitados: 0,
+          })
+          .select('*')
+          .single()
+
+        if (createError || !created) {
+          setError('No se pudo crear el presupuesto.')
+          setIsLoading(false)
+          return
+        }
+
+        presupuestoActual = created
+      }
+
       const { data: bebidasRows, error: bebidasError } = await supabase
         .from('bebidas')
         .select('*')
-        .eq('presupuesto_id', presupuestoRow.id)
+        .eq('presupuesto_id', presupuestoActual.id)
         .order('created_at', { ascending: false })
 
       if (!isActive) return
@@ -82,13 +137,13 @@ export default function Dashboard() {
         fechaActualizacion: row.fecha_actualizacion as string,
       }))
 
-      setPresupuestoId(presupuestoRow.id as string)
+      setPresupuestoId(presupuestoActual.id as string)
       setPresupuesto({
         bebidas,
-        presupuestoObjetivo: Number(presupuestoRow.presupuesto_objetivo ?? 0),
-        moneda: presupuestoRow.moneda === 'USD' ? 'USD' : 'ARS',
-        fechaEvento: presupuestoRow.fecha_evento ?? null,
-        cantidadInvitados: Number(presupuestoRow.cantidad_invitados ?? 0),
+        presupuestoObjetivo: Number(presupuestoActual.presupuesto_objetivo ?? 0),
+        moneda: presupuestoActual.moneda === 'USD' ? 'USD' : 'ARS',
+        fechaEvento: presupuestoActual.fecha_evento ?? null,
+        cantidadInvitados: Number(presupuestoActual.cantidad_invitados ?? 0),
       })
       setIsLoading(false)
     }
@@ -98,7 +153,7 @@ export default function Dashboard() {
     return () => {
       isActive = false
     }
-  }, [])
+  }, [session])
 
   const bebidasFiltradas = useMemo(() => {
     if (filter === 'todas') return presupuesto.bebidas
@@ -106,7 +161,7 @@ export default function Dashboard() {
   }, [filter, presupuesto.bebidas])
 
   async function handleSubmit(values: BebidaFormValues) {
-    if (!presupuestoId) {
+    if (!presupuestoId || !session?.user) {
       setError('No hay un presupuesto activo para guardar.')
       return
     }
@@ -155,6 +210,7 @@ export default function Dashboard() {
       .from('bebidas')
       .insert({
         presupuesto_id: presupuestoId,
+        user_id: session.user.id,
         nombre: values.nombre,
         categoria: values.categoria,
         cantidad: values.cantidad,
@@ -211,6 +267,58 @@ export default function Dashboard() {
     )
   }
 
+  if (!session?.user) {
+    return (
+      <div className="mx-auto flex w-full max-w-lg flex-col gap-4 px-4 py-12 text-center">
+        <div className="rounded-[var(--r-lg)] border border-[hsl(var(--border))] bg-[hsl(var(--surface))] p-6 shadow-[0_14px_32px_-26px_rgba(15,23,42,0.4)] sm:p-8">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[hsl(var(--text-muted))] sm:text-xs">
+            Acceso privado
+          </p>
+          <h1 className="mt-2 font-display text-2xl font-semibold text-[hsl(var(--text))] sm:text-3xl">
+            Entrá con tu email
+          </h1>
+          <p className="mt-2 text-xs text-[hsl(var(--text-muted))] sm:text-sm">
+            Te enviamos un link mágico para entrar sin contraseña.
+          </p>
+          <form
+            className="mt-4 flex flex-col gap-3 sm:mt-6"
+            onSubmit={async (event) => {
+              event.preventDefault()
+              setError(null)
+              setIsSendingLink(true)
+              const { error: signInError } = await supabase.auth.signInWithOtp({
+                email,
+                options: { emailRedirectTo: window.location.origin },
+              })
+              setIsSendingLink(false)
+              if (signInError) {
+                setError('No se pudo enviar el correo. Reintentá en unos segundos.')
+              }
+            }}
+          >
+            <input
+              className="rounded-[var(--r-md)] border border-[hsl(var(--border))] bg-white px-3 py-2 text-sm text-[hsl(var(--text))] shadow-inner focus:border-[hsl(var(--success))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--success))] focus:ring-opacity-30"
+              type="email"
+              placeholder="tu@email.com"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              required
+            />
+            <button
+              className="rounded-full bg-[hsl(var(--success))] px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70 sm:text-sm"
+              type="submit"
+              disabled={!email || isSendingLink}
+            >
+              {isSendingLink ? 'Enviando link...' : 'Enviar link mágico'}
+            </button>
+          </form>
+          {error ? (
+            <p className="mt-3 text-xs text-red-600">{error}</p>
+          ) : null}
+        </div>
+      </div>
+    )
+  }
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 px-4 sm:gap-6 sm:px-6">
       {error ? (
@@ -282,6 +390,14 @@ export default function Dashboard() {
             </label>
           </div>
         </div>
+        <div className="mt-4 flex justify-end">
+          <button
+            className="rounded-full border border-[hsl(var(--border))] bg-white px-3 py-1.5 text-[10px] font-semibold text-[hsl(var(--text-muted))] transition hover:border-[hsl(var(--text))] hover:text-[hsl(var(--text))] sm:text-xs"
+            type="button"
+            onClick={() => supabase.auth.signOut()}
+          >
+            Cerrar sesión
+          </button></div>
       </header>
 
       <ResumenTotal
@@ -303,11 +419,11 @@ export default function Dashboard() {
             <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[hsl(var(--text-muted))] sm:text-xs">
               Filtros
             </p>
-            <div className="mt-2 flex flex-wrap gap-1.5 sm:mt-3 sm:gap-2">
+            <div className="mt-2 flex flex-wrap gap-2 sm:mt-3 sm:gap-2">
               {FILTROS.map((categoria) => (
                 <button
                   key={categoria}
-                  className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold transition duration-150 ease-[cubic-bezier(.2,.8,.2,1)] sm:px-3 sm:py-1 sm:text-xs ${
+                  className={`rounded-full border px-3 py-1 text-[10px] font-semibold transition duration-150 ease-[cubic-bezier(.2,.8,.2,1)] sm:px-3 sm:py-1 sm:text-xs ${
                     filter === categoria
                       ? 'border-[hsl(var(--text))] bg-[hsl(var(--text))] text-white shadow-sm'
                       : 'border-[hsl(var(--border))] text-[hsl(var(--text-muted))] hover:border-[hsl(var(--text))] hover:text-[hsl(var(--text))]'
@@ -358,5 +474,4 @@ export default function Dashboard() {
     </div>
   )
 }
-
 

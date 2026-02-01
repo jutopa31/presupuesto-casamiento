@@ -18,12 +18,12 @@ export default function ResumenTotal({
   const gastoPorInvitado = cantidadInvitados > 0 ? totalGasto / cantidadInvitados : null
 
   return (
-    <div className="rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--surface))] p-4 shadow-[0_18px_40px_-30px_rgba(26,26,26,0.45)] sm:rounded-3xl sm:p-6">
+    <div className="rounded-[var(--r-lg)] border border-[hsl(var(--border))] bg-[hsl(var(--surface))] p-4 shadow-[0_14px_32px_-26px_rgba(15,23,42,0.4)] sm:p-6">
       <h2 className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[hsl(var(--text-muted))] sm:text-xs">
         Resumen
       </h2>
       <div className="mt-3 grid gap-2 sm:mt-4 sm:gap-4 md:grid-cols-4">
-        <div className="rounded-xl border border-[hsl(var(--border))] bg-white p-2.5 shadow-sm sm:rounded-2xl sm:p-4">
+        <div className="rounded-[var(--r-md)] border border-[hsl(var(--border))] bg-white p-2.5 shadow-[0_8px_16px_-14px_rgba(15,23,42,0.35)] sm:p-4">
           <p className="text-[9px] font-semibold uppercase tracking-[0.1em] text-[hsl(var(--text-muted))] sm:text-xs sm:tracking-[0.2em]">
             Cantidad
           </p>
@@ -31,7 +31,7 @@ export default function ResumenTotal({
             {totalCantidad} u.
           </p>
         </div>
-        <div className="rounded-xl border border-[hsl(var(--border))] bg-white p-2.5 shadow-sm sm:rounded-2xl sm:p-4">
+        <div className="rounded-[var(--r-md)] border border-[hsl(var(--border))] bg-white p-2.5 shadow-[0_8px_16px_-14px_rgba(15,23,42,0.35)] sm:p-4">
           <p className="text-[9px] font-semibold uppercase tracking-[0.1em] text-[hsl(var(--text-muted))] sm:text-xs sm:tracking-[0.2em]">
             Gasto
           </p>
@@ -39,7 +39,7 @@ export default function ResumenTotal({
             ${totalGasto.toFixed(2)}
           </p>
         </div>
-        <div className="rounded-xl border border-[hsl(var(--border))] bg-white p-2.5 shadow-sm sm:rounded-2xl sm:p-4">
+        <div className="rounded-[var(--r-md)] border border-[hsl(var(--border))] bg-white p-2.5 shadow-[0_8px_16px_-14px_rgba(15,23,42,0.35)] sm:p-4">
           <p className="text-[9px] font-semibold uppercase tracking-[0.1em] text-[hsl(var(--text-muted))] sm:text-xs sm:tracking-[0.2em]">
             {estado}
           </p>
@@ -47,12 +47,12 @@ export default function ResumenTotal({
             {diferencia >= 0 ? '+' : '-'}${Math.abs(diferencia).toFixed(2)}
           </p>
         </div>
-        <div className="rounded-xl border border-[hsl(var(--border))] bg-white p-2.5 shadow-sm sm:rounded-2xl sm:p-4">
+        <div className="rounded-[var(--r-md)] border border-[hsl(var(--border))] bg-white p-2.5 shadow-[0_8px_16px_-14px_rgba(15,23,42,0.35)] sm:p-4">
           <p className="text-[9px] font-semibold uppercase tracking-[0.1em] text-[hsl(var(--text-muted))] sm:text-xs sm:tracking-[0.2em]">
             Por invitado
           </p>
           <p className="mt-1 text-base font-semibold text-[hsl(var(--text))] sm:mt-2 sm:text-2xl">
-            {gastoPorInvitado === null ? 'â€”' : `$${gastoPorInvitado.toFixed(2)}`}
+            {gastoPorInvitado === null ? '-' : `$${gastoPorInvitado.toFixed(2)}`}
           </p>
         </div>
       </div>
