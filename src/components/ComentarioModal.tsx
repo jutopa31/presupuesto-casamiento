@@ -14,19 +14,19 @@ export default function ComentarioModal({
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4">
-      <div className="w-full max-w-md rounded-3xl border border-slate-200/70 bg-white/95 p-6 shadow-[0_25px_60px_-30px_rgba(15,23,42,0.8)] backdrop-blur">
-        <div className="flex items-start justify-between gap-4">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-0 sm:items-center sm:p-4">
+      <div className="w-full max-h-[85vh] overflow-auto rounded-t-2xl border border-[color:var(--line)] bg-[color:var(--panel)] p-4 shadow-[0_25px_60px_-30px_rgba(26,26,26,0.8)] sm:max-w-md sm:rounded-3xl sm:p-6">
+        <div className="flex items-start justify-between gap-3 sm:gap-4">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[color:var(--muted)] sm:text-xs">
               Detalles
             </p>
-            <h3 className="font-display text-2xl font-semibold text-slate-900">
+            <h3 className="font-display text-xl font-semibold text-[color:var(--ink)] sm:text-2xl">
               Comentarios
             </h3>
           </div>
           <button
-            className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
+            className="rounded-full border border-[color:var(--line)] bg-white px-2.5 py-1 text-[10px] font-semibold text-[color:var(--muted)] transition hover:border-[color:var(--ink)] hover:text-[color:var(--ink)] sm:px-3 sm:text-xs"
             type="button"
             onClick={onClose}
           >
@@ -34,7 +34,7 @@ export default function ComentarioModal({
           </button>
         </div>
         <textarea
-          className="mt-4 min-h-[160px] w-full rounded-2xl border border-slate-200 bg-white/90 px-3 py-2 text-sm text-slate-900 shadow-inner focus:border-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-200"
+          className="mt-3 min-h-[120px] w-full rounded-xl border border-[color:var(--line)] bg-white px-3 py-2 text-sm text-[color:var(--ink)] shadow-inner focus:border-[color:var(--salvia)] focus:outline-none focus:ring-2 focus:ring-[color:var(--salvia)] focus:ring-opacity-30 sm:mt-4 sm:min-h-[160px] sm:rounded-2xl"
           placeholder="Agrega notas..."
           value={value}
           onChange={(event) => onChange(event.target.value)}
