@@ -27,6 +27,29 @@ npm run build
 npm run preview
 ```
 
+## Apps nativas (Capacitor)
+Este proyecto puede empaquetarse como app nativa para Android/iOS usando Capacitor.
+
+### Requisitos adicionales
+- Android: Android Studio + Android SDK
+- iOS: macOS + Xcode + CocoaPods
+
+### Flujo basico
+```bash
+npm run build
+npx cap sync
+```
+
+### Abrir proyectos nativos
+```bash
+npx cap open android
+npx cap open ios
+```
+
+### Notas
+- iOS solo puede compilarse en macOS.
+- Cada vez que cambies el frontend, corre `npm run build` y luego `npx cap sync`.
+
 ## Estructura principal
 - `src/components/Dashboard.tsx`: vista principal, auth y datos.
 - `src/components/BebidaForm.tsx`: formulario alta/edicion.
