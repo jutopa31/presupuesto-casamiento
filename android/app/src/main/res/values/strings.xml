@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Presupuesto Casamiento</string>
+    <string name="title_activity_main">Presupuesto Casamiento</string>
+    <string name="package_name">com.presupuesto.casamiento</string>
+    <string name="custom_url_scheme">com.presupuesto.casamiento</string>
+</resources>
