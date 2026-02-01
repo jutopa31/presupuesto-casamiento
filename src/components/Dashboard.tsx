@@ -30,6 +30,13 @@ export default function Dashboard() {
   const [session, setSession] = useState<Session | null>(null)
   const [email, setEmail] = useState('')
   const [isSendingLink, setIsSendingLink] = useState(false)
+  const [allowedEmails] = useState(() => {
+    const raw = import.meta.env.VITE_ALLOWED_EMAILS ?? ''
+    return raw
+      .split(',')
+      .map((entry: string) => entry.trim().toLowerCase())
+      .filter(Boolean)
+  })
   const [presupuesto, setPresupuesto] = useState<Presupuesto>(DEFAULT_PRESUPUESTO)
   const [presupuestoId, setPresupuestoId] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -44,12 +51,31 @@ export default function Dashboard() {
 
     supabase.auth.getSession().then(({ data }) => {
       if (!isMounted) return
+      if (data.session?.user?.email && allowedEmails.length > 0) {
+        const normalized = data.session.user.email.toLowerCase()
+        if (!allowedEmails.includes(normalized)) {
+          setError('Email no autorizado.')
+          supabase.auth.signOut()
+          setSession(null)
+          setIsLoading(false)
+          return
+        }
+      }
       setSession(data.session)
       setIsLoading(false)
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, next) => {
       if (!isMounted) return
+      if (next?.user?.email && allowedEmails.length > 0) {
+        const normalized = next.user.email.toLowerCase()
+        if (!allowedEmails.includes(normalized)) {
+          setError('Email no autorizado.')
+          supabase.auth.signOut()
+          setSession(null)
+          return
+        }
+      }
       setSession(next)
     })
 
@@ -285,6 +311,10 @@ export default function Dashboard() {
             onSubmit={async (event) => {
               event.preventDefault()
               setError(null)
+              if (allowedEmails.length > 0 && !allowedEmails.includes(email.trim().toLowerCase())) {
+                setError('Email no autorizado.')
+                return
+              }
               setIsSendingLink(true)
               const { error: signInError } = await supabase.auth.signInWithOtp({
                 email,
@@ -345,7 +375,7 @@ export default function Dashboard() {
                 Presupuesto
               </span>
               <input
-                className="w-full bg-transparent text-sm font-semibold text-[hsl(var(--text))] focus:outline-none"
+                className="w-full bg-transparent text-sm font-semibold text-[hsl(var(--text))] focus:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ring))] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                 type="number"
                 min={0}
                 value={presupuesto.presupuestoObjetivo}
@@ -369,7 +399,7 @@ export default function Dashboard() {
                 Invitados
               </span>
               <input
-                className="w-full bg-transparent text-sm font-semibold text-[hsl(var(--text))] focus:outline-none"
+                className="w-full bg-transparent text-sm font-semibold text-[hsl(var(--text))] focus:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ring))] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                 type="number"
                 min={0}
                 value={presupuesto.cantidadInvitados}
@@ -423,7 +453,7 @@ export default function Dashboard() {
               {FILTROS.map((categoria) => (
                 <button
                   key={categoria}
-                  className={`rounded-full border px-3 py-1 text-[10px] font-semibold transition duration-150 ease-[cubic-bezier(.2,.8,.2,1)] sm:px-3 sm:py-1 sm:text-xs ${
+                  className={`press rounded-full border px-3 py-1 text-[10px] font-semibold transition duration-150 ease-[cubic-bezier(.2,.8,.2,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ring))] focus-visible:ring-offset-2 focus-visible:ring-offset-white sm:px-3 sm:py-1 sm:text-xs ${
                     filter === categoria
                       ? 'border-[hsl(var(--text))] bg-[hsl(var(--text))] text-white shadow-sm'
                       : 'border-[hsl(var(--border))] text-[hsl(var(--text-muted))] hover:border-[hsl(var(--text))] hover:text-[hsl(var(--text))]'
