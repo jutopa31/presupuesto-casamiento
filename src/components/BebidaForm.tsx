@@ -7,6 +7,7 @@ export interface BebidaFormValues {
   categoria: CategoriaBebida
   cantidad: number
   precioUnitario: number
+  comprada: boolean
   lugarPrecio: string
   comentarios: string
 }
@@ -35,6 +36,7 @@ const DEFAULT_VALUES: BebidaFormDraft = {
   categoria: 'destilado',
   cantidad: 1,
   precioUnitario: 0,
+  comprada: false,
   lugarPrecio: '',
   comentarios: '',
 }
@@ -47,6 +49,7 @@ export default function BebidaForm({ initialValue, onSubmit, onCancel }: BebidaF
           categoria: initialValue.categoria,
           cantidad: initialValue.cantidad,
           precioUnitario: initialValue.precioUnitario,
+          comprada: initialValue.comprada,
           lugarPrecio: initialValue.lugarPrecio,
           comentarios: initialValue.comentarios,
         }
@@ -140,6 +143,15 @@ export default function BebidaForm({ initialValue, onSubmit, onCancel }: BebidaF
             value={form.lugarPrecio}
             onChange={(event) => updateField('lugarPrecio', event.target.value)}
           />
+        </label>
+        <label className="flex items-center gap-2 text-sm font-semibold text-[hsl(var(--text))]">
+          <input
+            className="h-4 w-4 rounded border border-[hsl(var(--border))] text-[hsl(var(--accent))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))] focus:ring-opacity-40"
+            type="checkbox"
+            checked={form.comprada}
+            onChange={(event) => updateField('comprada', event.target.checked)}
+          />
+          Comprada
         </label>
         <label className="flex flex-col gap-1 text-sm font-semibold text-[hsl(var(--text))] md:col-span-2">
           Comentarios

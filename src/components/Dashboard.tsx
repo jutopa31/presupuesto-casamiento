@@ -6,7 +6,7 @@ import type { BebidaFormValues } from './BebidaForm'
 import ComentarioModal from './ComentarioModal'
 import ResumenTotal from './ResumenTotal'
 import type { Bebida, CategoriaBebida, Presupuesto } from '../types/bebida'
-import { totalCantidad, totalGasto } from '../utils/calculations'
+import { totalGastoPendiente, totalGastoReal } from '../utils/calculations'
 import { normalizeNumberInput } from '../utils/numberInput'
 import { supabase } from '../utils/supabaseClient'
 
@@ -160,6 +160,7 @@ export default function Dashboard() {
         categoria: row.categoria as CategoriaBebida,
         cantidad: Number(row.cantidad ?? 0),
         precioUnitario: Number(row.precio_unitario ?? 0),
+        comprada: Boolean(row.comprada ?? false),
         lugarPrecio: (row.lugar_precio ?? '') as string,
         comentarios: (row.comentarios ?? '') as string,
         fechaActualizacion: row.fecha_actualizacion as string,
@@ -204,6 +205,7 @@ export default function Dashboard() {
           categoria: values.categoria,
           cantidad: values.cantidad,
           precio_unitario: values.precioUnitario,
+          comprada: values.comprada,
           lugar_precio: values.lugarPrecio,
           comentarios: values.comentarios,
         })
@@ -225,6 +227,7 @@ export default function Dashboard() {
                 ...values,
                 precioUnitario: values.precioUnitario,
                 lugarPrecio: values.lugarPrecio,
+                comprada: values.comprada,
                 fechaActualizacion: (data?.fecha_actualizacion as string) ?? now,
               }
             : bebida,
@@ -243,6 +246,7 @@ export default function Dashboard() {
         categoria: values.categoria,
         cantidad: values.cantidad,
         precio_unitario: values.precioUnitario,
+        comprada: values.comprada,
         lugar_precio: values.lugarPrecio,
         comentarios: values.comentarios,
       })
@@ -260,6 +264,7 @@ export default function Dashboard() {
       categoria: insertData.categoria as CategoriaBebida,
       cantidad: Number(insertData.cantidad ?? values.cantidad),
       precioUnitario: Number(insertData.precio_unitario ?? values.precioUnitario),
+      comprada: Boolean(insertData.comprada ?? values.comprada),
       lugarPrecio: (insertData.lugar_precio ?? values.lugarPrecio) as string,
       comentarios: (insertData.comentarios ?? values.comentarios) as string,
       fechaActualizacion: (insertData.fecha_actualizacion as string) ?? now,
@@ -284,8 +289,36 @@ export default function Dashboard() {
     })
   }
 
-  const totalCantidadValue = totalCantidad(presupuesto.bebidas)
-  const totalGastoValue = totalGasto(presupuesto.bebidas)
+  async function handleToggleComprada(item: Bebida) {
+    const nextValue = !item.comprada
+    const { error: updateError, data } = await supabase
+      .from('bebidas')
+      .update({ comprada: nextValue })
+      .eq('id', item.id)
+      .select('*')
+      .single()
+
+    if (updateError) {
+      setError('No se pudo actualizar el estado de compra.')
+      return
+    }
+
+    setPresupuesto({
+      ...presupuesto,
+      bebidas: presupuesto.bebidas.map((bebida) =>
+        bebida.id === item.id
+          ? {
+              ...bebida,
+              comprada: nextValue,
+              fechaActualizacion: (data?.fecha_actualizacion as string) ?? bebida.fechaActualizacion,
+            }
+          : bebida,
+      ),
+    })
+  }
+
+  const totalGastoRealValue = totalGastoReal(presupuesto.bebidas)
+  const totalGastoPendienteValue = totalGastoPendiente(presupuesto.bebidas)
   const presupuestoObjetivoValue = Number(presupuesto.presupuestoObjetivo || 0)
   const cantidadInvitadosValue = Number(presupuesto.cantidadInvitados || 0)
 
@@ -445,8 +478,8 @@ export default function Dashboard() {
       </header>
 
       <ResumenTotal
-        totalCantidad={totalCantidadValue}
-        totalGasto={totalGastoValue}
+        totalGastoReal={totalGastoRealValue}
+        totalGastoPendiente={totalGastoPendienteValue}
         presupuestoObjetivo={presupuestoObjetivoValue}
         cantidadInvitados={cantidadInvitadosValue}
       />
@@ -499,6 +532,7 @@ export default function Dashboard() {
                 bebida={bebida}
                 onEdit={(item) => setEditing(item)}
                 onDelete={handleDelete}
+                onToggleComprada={handleToggleComprada}
                 onShowNotes={(item) => {
                   setModalComentario(item.comentarios || '')
                   setIsModalOpen(true)

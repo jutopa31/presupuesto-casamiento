@@ -11,6 +11,7 @@ export interface Bebida {
   categoria: CategoriaBebida
   cantidad: number
   precioUnitario: number
+  comprada: boolean
   lugarPrecio: string
   comentarios: string
   fechaActualizacion: string

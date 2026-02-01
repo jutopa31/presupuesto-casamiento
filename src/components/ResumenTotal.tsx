@@ -1,21 +1,21 @@
-﻿interface ResumenTotalProps {
-  totalCantidad: number
-  totalGasto: number
+interface ResumenTotalProps {
+  totalGastoReal: number
+  totalGastoPendiente: number
   presupuestoObjetivo: number
   cantidadInvitados: number
 }
 
 export default function ResumenTotal({
-  totalCantidad,
-  totalGasto,
+  totalGastoReal,
+  totalGastoPendiente,
   presupuestoObjetivo,
   cantidadInvitados,
 }: ResumenTotalProps) {
-  const diferencia = presupuestoObjetivo - totalGasto
-  const estado = diferencia >= 0 ? 'Ahorro' : 'Exceso'
+  const diferencia = presupuestoObjetivo - totalGastoReal
+  const estado = diferencia >= 0 ? 'Presupuesto restante' : 'Presupuesto excedido'
   const estadoColor =
     diferencia >= 0 ? 'text-[hsl(var(--success))]' : 'text-[hsl(var(--danger))]'
-  const gastoPorInvitado = cantidadInvitados > 0 ? totalGasto / cantidadInvitados : null
+  const gastoPorInvitado = cantidadInvitados > 0 ? totalGastoReal / cantidadInvitados : null
 
   return (
     <div className="rounded-[var(--r-lg)] border border-[hsl(var(--border))] bg-[hsl(var(--surface))] p-4 shadow-[0_2px_8px_-6px_rgba(15,23,42,0.12)] sm:p-5">
@@ -25,18 +25,18 @@ export default function ResumenTotal({
       <div className="mt-3 grid gap-2 sm:mt-4 sm:gap-4 md:grid-cols-4">
         <div className="rounded-[var(--r-md)] border border-[hsl(var(--border))] bg-white p-2.5 shadow-[0_2px_6px_-4px_rgba(15,23,42,0.12)] sm:p-4">
           <p className="text-[9px] font-semibold uppercase tracking-[0.1em] text-[hsl(var(--text-muted))] sm:text-xs sm:tracking-[0.2em]">
-            Cantidad
+            Gasto real
           </p>
           <p className="mt-1 text-base font-semibold text-[hsl(var(--text))] sm:mt-2 sm:text-2xl">
-            {totalCantidad} u.
+            ${totalGastoReal.toFixed(2)}
           </p>
         </div>
         <div className="rounded-[var(--r-md)] border border-[hsl(var(--border))] bg-white p-2.5 shadow-[0_2px_6px_-4px_rgba(15,23,42,0.12)] sm:p-4">
           <p className="text-[9px] font-semibold uppercase tracking-[0.1em] text-[hsl(var(--text-muted))] sm:text-xs sm:tracking-[0.2em]">
-            Gasto
+            Pendiente
           </p>
           <p className="mt-1 text-base font-semibold text-[hsl(var(--text))] sm:mt-2 sm:text-2xl">
-            ${totalGasto.toFixed(2)}
+            ${totalGastoPendiente.toFixed(2)}
           </p>
         </div>
         <div className="rounded-[var(--r-md)] border border-[hsl(var(--border))] bg-white p-2.5 shadow-[0_2px_6px_-4px_rgba(15,23,42,0.12)] sm:p-4">
@@ -59,5 +59,3 @@ export default function ResumenTotal({
     </div>
   )
 }
-
-

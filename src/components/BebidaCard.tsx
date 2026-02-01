@@ -4,6 +4,7 @@ interface BebidaCardProps {
   bebida: Bebida
   onEdit: (bebida: Bebida) => void
   onDelete: (id: string) => void
+  onToggleComprada: (bebida: Bebida) => void
   onShowNotes?: (bebida: Bebida) => void
 }
 
@@ -11,9 +12,14 @@ export default function BebidaCard({
   bebida,
   onEdit,
   onDelete,
+  onToggleComprada,
   onShowNotes,
 }: BebidaCardProps) {
   const subtotal = bebida.cantidad * bebida.precioUnitario
+  const estadoLabel = bebida.comprada ? 'Comprada' : 'Pendiente'
+  const estadoStyles = bebida.comprada
+    ? 'border-[hsl(var(--success))] text-[hsl(var(--success))]'
+    : 'border-[hsl(var(--warning))] text-[hsl(var(--warning))]'
 
   return (
     <div className="fade-in rounded-[var(--r-lg)] border border-[hsl(var(--border))] bg-white p-4 shadow-[0_2px_8px_-6px_rgba(15,23,42,0.12)] sm:p-5">
@@ -22,9 +28,16 @@ export default function BebidaCard({
           <p className="truncate font-display text-lg font-semibold text-[hsl(var(--text))] sm:text-2xl">
             {bebida.nombre}
           </p>
-          <span className="mt-2 inline-flex rounded-full border border-[hsl(var(--border))] bg-[hsl(var(--surface))] px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-[hsl(var(--text-muted))] sm:px-3 sm:py-1 sm:text-xs sm:tracking-[0.15em]">
-            {bebida.categoria}
-          </span>
+          <div className="mt-2 flex flex-wrap items-center gap-2">
+            <span className="inline-flex rounded-full border border-[hsl(var(--border))] bg-[hsl(var(--surface))] px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-[hsl(var(--text-muted))] sm:px-3 sm:py-1 sm:text-xs sm:tracking-[0.15em]">
+              {bebida.categoria}
+            </span>
+            <span
+              className={`inline-flex rounded-full border bg-white px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] sm:px-3 sm:py-1 sm:text-xs sm:tracking-[0.15em] ${estadoStyles}`}
+            >
+              {estadoLabel}
+            </span>
+          </div>
         </div>
         <div className="flex shrink-0 gap-3 text-right sm:block sm:gap-0">
           <div>
@@ -75,6 +88,13 @@ export default function BebidaCard({
             Notas
           </button>
         ) : null}
+        <button
+          className="press rounded-full border border-[hsl(var(--border))] bg-white px-3 py-1 text-[10px] font-semibold text-[hsl(var(--text-muted))] transition duration-150 ease-[cubic-bezier(.2,.8,.2,1)] hover:border-[hsl(var(--text))] hover:text-[hsl(var(--text))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ring))] focus-visible:ring-offset-2 focus-visible:ring-offset-white sm:px-3 sm:text-xs"
+          type="button"
+          onClick={() => onToggleComprada(bebida)}
+        >
+          {bebida.comprada ? 'Marcar pendiente' : 'Marcar comprada'}
+        </button>
         <button
           className="press rounded-full border border-[hsl(var(--border))] bg-white px-3 py-1 text-[10px] font-semibold text-[hsl(var(--text-muted))] transition duration-150 ease-[cubic-bezier(.2,.8,.2,1)] hover:border-[hsl(var(--text))] hover:text-[hsl(var(--text))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ring))] focus-visible:ring-offset-2 focus-visible:ring-offset-white sm:px-3 sm:text-xs"
           type="button"
