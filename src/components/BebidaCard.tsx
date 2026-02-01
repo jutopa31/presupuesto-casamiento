@@ -16,7 +16,7 @@ export default function BebidaCard({
   const subtotal = bebida.cantidad * bebida.precioUnitario
 
   return (
-    <div className="fade-in rounded-[var(--r-lg)] border border-[hsl(var(--border))] bg-white p-4 shadow-[0_10px_24px_-20px_rgba(15,23,42,0.35)] sm:p-5">
+    <div className="fade-in rounded-[var(--r-lg)] border border-[hsl(var(--border))] bg-white p-4 shadow-[0_2px_8px_-6px_rgba(15,23,42,0.12)] sm:p-5">
       <div className="flex flex-wrap items-start justify-between gap-3 sm:gap-4">
         <div className="min-w-0 flex-1">
           <p className="truncate font-display text-lg font-semibold text-[hsl(var(--text))] sm:text-2xl">

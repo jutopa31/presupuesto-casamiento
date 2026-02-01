@@ -53,7 +53,7 @@ export default function BebidaForm({ initialValue, onSubmit, onCancel }: BebidaF
 
   return (
     <form
-      className="rounded-[var(--r-lg)] border border-[hsl(var(--border))] bg-[hsl(var(--surface))] p-4 shadow-[0_10px_24px_-22px_rgba(15,23,42,0.35)] sm:p-5"
+      className="rounded-[var(--r-lg)] border border-[hsl(var(--border))] bg-[hsl(var(--surface))] p-4 shadow-[0_2px_8px_-6px_rgba(15,23,42,0.12)] sm:p-5"
       onSubmit={(event) => {
         event.preventDefault()
         onSubmit(form)
@@ -136,7 +136,7 @@ export default function BebidaForm({ initialValue, onSubmit, onCancel }: BebidaF
       <div className="mt-4 flex items-center justify-end gap-2 sm:mt-5">
         {onCancel ? (
           <button
-            className="press rounded-full border border-[hsl(var(--border))] bg-white px-3 py-1.5 text-[10px] font-semibold text-[hsl(var(--text-muted))] transition duration-150 ease-[cubic-bezier(.2,.8,.2,1)] hover:border-[hsl(var(--text))] hover:text-[hsl(var(--text))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ring))] focus-visible:ring-offset-2 focus-visible:ring-offset-white sm:px-4 sm:py-2 sm:text-xs"
+            className="press rounded-[var(--r-md)] border border-[hsl(var(--border))] bg-white px-3 py-1.5 text-[10px] font-semibold text-[hsl(var(--text-muted))] transition duration-150 ease-[cubic-bezier(.2,.8,.2,1)] hover:border-[hsl(var(--text))] hover:text-[hsl(var(--text))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ring))] focus-visible:ring-offset-2 focus-visible:ring-offset-white sm:px-4 sm:py-2 sm:text-xs"
             type="button"
             onClick={onCancel}
           >
@@ -144,7 +144,7 @@ export default function BebidaForm({ initialValue, onSubmit, onCancel }: BebidaF
           </button>
         ) : null}
         <button
-          className="press rounded-full bg-[hsl(var(--accent))] px-3 py-1.5 text-[10px] font-semibold text-[hsl(var(--accent-foreground))] shadow-[0_8px_18px_-14px_rgba(15,23,42,0.45)] transition duration-150 ease-[cubic-bezier(.2,.8,.2,1)] hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ring))] focus-visible:ring-offset-2 focus-visible:ring-offset-white sm:px-4 sm:py-2 sm:text-xs"
+          className="press rounded-[var(--r-md)] bg-[hsl(var(--accent))] px-3 py-1.5 text-[10px] font-semibold text-[hsl(var(--accent-foreground))] shadow-[0_4px_10px_-8px_rgba(15,23,42,0.18)] transition duration-150 ease-[cubic-bezier(.2,.8,.2,1)] hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ring))] focus-visible:ring-offset-2 focus-visible:ring-offset-white sm:px-4 sm:py-2 sm:text-xs"
           type="submit"
         >
           Guardar

@@ -14,8 +14,8 @@ export default function ComentarioModal({
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-0 sm:items-center sm:p-4">
-      <div className="w-full max-h-[85vh] overflow-auto rounded-t-[var(--r-lg)] border border-[hsl(var(--border))] bg-[hsl(var(--surface))] p-4 shadow-[0_20px_50px_-28px_rgba(15,23,42,0.6)] sm:max-w-md sm:rounded-[var(--r-lg)] sm:p-6">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/30 p-0 sm:items-center sm:p-4">
+      <div className="w-full max-h-[85vh] overflow-auto rounded-t-[var(--r-lg)] border border-[hsl(var(--border))] bg-[hsl(var(--surface))] p-4 shadow-[0_10px_28px_-18px_rgba(15,23,42,0.35)] sm:max-w-md sm:rounded-[var(--r-lg)] sm:p-5">
         <div className="flex items-start justify-between gap-3 sm:gap-4">
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[hsl(var(--text-muted))] sm:text-xs">

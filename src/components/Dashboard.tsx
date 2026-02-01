@@ -29,7 +29,8 @@ const FILTROS: Array<'todas' | CategoriaBebida> = [
 export default function Dashboard() {
   const [session, setSession] = useState<Session | null>(null)
   const [email, setEmail] = useState('')
-  const [isSendingLink, setIsSendingLink] = useState(false)
+  const [password, setPassword] = useState('')
+  const [isSigningIn, setIsSigningIn] = useState(false)
   const [allowedEmails] = useState(() => {
     const raw = import.meta.env.VITE_ALLOWED_EMAILS ?? ''
     return raw
@@ -304,7 +305,7 @@ export default function Dashboard() {
             Entrá con tu email
           </h1>
           <p className="mt-2 text-xs text-[hsl(var(--text-muted))] sm:text-sm">
-            Te enviamos un link mágico para entrar sin contraseña.
+            Ingresá con tu email y contraseña.
           </p>
           <form
             className="mt-4 flex flex-col gap-3 sm:mt-6"
@@ -315,16 +316,14 @@ export default function Dashboard() {
                 setError('Email no autorizado.')
                 return
               }
-              setIsSendingLink(true)
-              const rawSiteUrl = import.meta.env.VITE_SITE_URL || window.location.origin
-              const siteUrl = rawSiteUrl.trim().replace(/\/+$/, '')
-              const { error: signInError } = await supabase.auth.signInWithOtp({
-                email,
-                options: { emailRedirectTo: siteUrl },
+              setIsSigningIn(true)
+              const { error: signInError } = await supabase.auth.signInWithPassword({
+                email: email.trim(),
+                password,
               })
-              setIsSendingLink(false)
+              setIsSigningIn(false)
               if (signInError) {
-                setError('No se pudo enviar el correo. Reintentá en unos segundos.')
+                setError('No se pudo iniciar sesión. Verificá tus credenciales.')
               }
             }}
           >
@@ -336,12 +335,20 @@ export default function Dashboard() {
               onChange={(event) => setEmail(event.target.value)}
               required
             />
+            <input
+              className="rounded-[var(--r-md)] border border-[hsl(var(--border))] bg-white px-3 py-2 text-sm text-[hsl(var(--text))] shadow-inner focus:border-[hsl(var(--success))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--success))] focus:ring-opacity-30"
+              type="password"
+              placeholder="Tu contraseña"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              required
+            />
             <button
               className="rounded-full bg-[hsl(var(--success))] px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70 sm:text-sm"
               type="submit"
-              disabled={!email || isSendingLink}
+              disabled={!email || !password || isSigningIn}
             >
-              {isSendingLink ? 'Enviando link...' : 'Enviar link mágico'}
+              {isSigningIn ? 'Iniciando sesión...' : 'Ingresar'}
             </button>
           </form>
           {error ? (
