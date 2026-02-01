@@ -9,6 +9,7 @@ import type { Bebida, CategoriaBebida, Presupuesto } from '../types/bebida'
 import { totalGastoPendiente, totalGastoReal } from '../utils/calculations'
 import { normalizeNumberInput } from '../utils/numberInput'
 import { supabase } from '../utils/supabaseClient'
+import { APP_VERSION } from '../version'
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>
@@ -543,6 +544,9 @@ export default function Dashboard() {
             Cerrar sesión
           </button>
         </div>
+        <p className="mt-2 text-right text-[9px] font-semibold uppercase tracking-[0.18em] text-[hsl(var(--text-muted))] sm:text-[10px]">
+          Version {APP_VERSION}
+        </p>
       </header>
 
       <ResumenTotal
