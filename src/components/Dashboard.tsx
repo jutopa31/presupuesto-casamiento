@@ -54,12 +54,18 @@ export default function Dashboard() {
   const [modalComentario, setModalComentario] = useState('')
   const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null)
   const [isInstalling, setIsInstalling] = useState(false)
+  const [installHint, setInstallHint] = useState<string | null>(null)
+  const [isAndroid, setIsAndroid] = useState(false)
+  const [isStandalone, setIsStandalone] = useState(false)
 
   useEffect(() => {
     function handleBeforeInstallPrompt(event: Event) {
       event.preventDefault()
       setInstallPrompt(event as BeforeInstallPromptEvent)
     }
+
+    setIsAndroid(/Android/i.test(navigator.userAgent))
+    setIsStandalone(window.matchMedia('(display-mode: standalone)').matches)
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
 
@@ -69,7 +75,11 @@ export default function Dashboard() {
   }, [])
 
   async function handleInstallClick() {
-    if (!installPrompt || isInstalling) return
+    if (isInstalling) return
+    if (!installPrompt) {
+      setInstallHint('En Android: menú ⋮ del navegador → Instalar app.')
+      return
+    }
     setIsInstalling(true)
     await installPrompt.prompt()
     await installPrompt.userChoice
@@ -416,7 +426,7 @@ export default function Dashboard() {
               {isSigningIn ? 'Iniciando sesión...' : 'Ingresar'}
             </button>
           </form>
-          {installPrompt ? (
+          {(installPrompt || (isAndroid && !isStandalone)) ? (
             <button
               className="mt-3 self-center rounded-[var(--r-md)] border border-[hsl(var(--border))] bg-white px-3 py-1.5 text-[10px] font-semibold text-[hsl(var(--text-muted))] transition hover:border-[hsl(var(--text))] hover:text-[hsl(var(--text))] disabled:cursor-not-allowed disabled:opacity-70 sm:text-xs"
               type="button"
@@ -425,6 +435,9 @@ export default function Dashboard() {
             >
               {isInstalling ? 'Instalando...' : 'Instalar app'}
             </button>
+          ) : null}
+          {installHint ? (
+            <p className="mt-2 text-[10px] text-[hsl(var(--text-muted))] sm:text-xs">{installHint}</p>
           ) : null}
           {error ? (
             <p className="mt-3 text-xs text-red-600">{error}</p>
@@ -507,7 +520,7 @@ export default function Dashboard() {
           </div>
         </div>
         <div className="mt-3 flex flex-wrap items-center justify-end gap-2">
-          {installPrompt ? (
+          {(installPrompt || (isAndroid && !isStandalone)) ? (
             <button
               className="rounded-[var(--r-md)] border border-[hsl(var(--border))] bg-white px-3 py-1.5 text-[10px] font-semibold text-[hsl(var(--text-muted))] transition hover:border-[hsl(var(--text))] hover:text-[hsl(var(--text))] disabled:cursor-not-allowed disabled:opacity-70 sm:text-xs"
               type="button"
@@ -516,6 +529,11 @@ export default function Dashboard() {
             >
               {isInstalling ? 'Instalando...' : 'Instalar app'}
             </button>
+          ) : null}
+          {installHint ? (
+            <span className="text-[10px] text-[hsl(var(--text-muted))] sm:text-xs">
+              {installHint}
+            </span>
           ) : null}
           <button
             className="rounded-[var(--r-md)] border border-[hsl(var(--border))] bg-white px-3 py-1.5 text-[10px] font-semibold text-[hsl(var(--text-muted))] transition hover:border-[hsl(var(--text))] hover:text-[hsl(var(--text))] sm:text-xs"
