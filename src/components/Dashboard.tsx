@@ -7,6 +7,7 @@ import ComentarioModal from './ComentarioModal'
 import ResumenTotal from './ResumenTotal'
 import type { Bebida, CategoriaBebida, Presupuesto } from '../types/bebida'
 import { totalCantidad, totalGasto } from '../utils/calculations'
+import { normalizeNumberInput } from '../utils/numberInput'
 import { supabase } from '../utils/supabaseClient'
 
 const DEFAULT_PRESUPUESTO: Presupuesto = {
@@ -389,7 +390,8 @@ export default function Dashboard() {
                 min={0}
                 value={presupuesto.presupuestoObjetivo}
                 onChange={(event) => {
-                  const value = Number(event.target.value)
+                  const normalized = normalizeNumberInput(event.target.value)
+                  const value = Number(normalized || 0)
                   setPresupuesto({ ...presupuesto, presupuestoObjetivo: value })
                   if (presupuestoId) {
                     supabase
@@ -413,7 +415,8 @@ export default function Dashboard() {
                 min={0}
                 value={presupuesto.cantidadInvitados}
                 onChange={(event) => {
-                  const value = Number(event.target.value)
+                  const normalized = normalizeNumberInput(event.target.value)
+                  const value = Number(normalized || 0)
                   setPresupuesto({ ...presupuesto, cantidadInvitados: value })
                   if (presupuestoId) {
                     supabase

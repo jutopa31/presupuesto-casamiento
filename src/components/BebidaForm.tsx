@@ -1,5 +1,6 @@
 ﻿import { useState } from 'react'
 import type { Bebida, CategoriaBebida } from '../types/bebida'
+import { normalizeNumberInput } from '../utils/numberInput'
 
 export interface BebidaFormValues {
   nombre: string
@@ -100,7 +101,10 @@ export default function BebidaForm({ initialValue, onSubmit, onCancel }: BebidaF
             type="number"
             min={1}
             value={form.cantidad}
-            onChange={(event) => updateField('cantidad', Number(event.target.value))}
+            onChange={(event) => {
+              const normalized = normalizeNumberInput(event.target.value)
+              updateField('cantidad', Number(normalized || 0))
+            }}
           />
         </label>
         <label className="flex flex-col gap-1 text-sm font-semibold text-[hsl(var(--text))]">
@@ -111,7 +115,10 @@ export default function BebidaForm({ initialValue, onSubmit, onCancel }: BebidaF
             min={0}
             step="0.01"
             value={form.precioUnitario}
-            onChange={(event) => updateField('precioUnitario', Number(event.target.value))}
+            onChange={(event) => {
+              const normalized = normalizeNumberInput(event.target.value, { allowDecimal: true })
+              updateField('precioUnitario', Number(normalized || 0))
+            }}
           />
         </label>
         <label className="flex flex-col gap-1 text-sm font-semibold text-[hsl(var(--text))]">
