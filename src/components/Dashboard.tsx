@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+﻿import { useEffect, useMemo, useState } from 'react'
 import BebidaCard from './BebidaCard'
 import BebidaForm from './BebidaForm'
 import type { BebidaFormValues } from './BebidaForm'
@@ -205,39 +205,39 @@ export default function Dashboard() {
 
   if (isLoading) {
     return (
-      <div className="mx-auto flex w-full max-w-4xl flex-col gap-4 px-4 py-10 text-center text-sm text-[color:var(--muted)]">
+      <div className="mx-auto flex w-full max-w-4xl flex-col gap-4 px-4 py-10 text-center text-sm text-[hsl(var(--text-muted))]">
         Cargando presupuesto desde Supabase...
       </div>
     )
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-4 sm:gap-6 sm:px-6">
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 px-4 sm:gap-6 sm:px-6">
       {error ? (
-        <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-700">
+        <div className="rounded-[var(--r-md)] border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-700">
           {error}
         </div>
       ) : null}
-      <header className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--panel)] p-4 shadow-[0_16px_40px_-32px_rgba(26,26,26,0.45)] sm:rounded-3xl sm:p-6">
+      <header className="rounded-[var(--r-lg)] border border-[hsl(var(--border))] bg-[hsl(var(--surface))] p-4 shadow-[0_10px_26px_-20px_rgba(15,23,42,0.35)] sm:p-6">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div className="flex flex-col gap-2">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[color:var(--muted)] sm:text-xs">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[hsl(var(--text-muted))] sm:text-xs">
               Presupuesto de bebidas
             </p>
-            <h1 className="font-display text-2xl font-semibold text-[color:var(--ink)] sm:text-4xl md:text-5xl">
+            <h1 className="font-display text-2xl font-semibold text-[hsl(var(--text))] sm:text-4xl md:text-5xl">
               Presupuesto Casamiento
             </h1>
-            <p className="max-w-xl text-xs text-[color:var(--muted)] sm:text-sm">
+            <p className="max-w-xl text-xs text-[hsl(var(--text-muted))] sm:text-sm">
               Controla cantidades, precios y notas con un tablero claro y minimalista.
             </p>
           </div>
           <div className="grid w-full gap-2 sm:grid-cols-2 sm:gap-3 lg:max-w-md">
-            <label className="flex flex-col gap-1 rounded-2xl border border-[color:var(--line)] bg-white px-3 py-2 shadow-[0_8px_24px_-18px_rgba(26,26,26,0.4)]">
-              <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[color:var(--muted)]">
+            <label className="flex flex-col gap-1 rounded-[var(--r-md)] border border-[hsl(var(--border))] bg-white px-3 py-2 shadow-[0_8px_20px_-18px_rgba(15,23,42,0.35)]">
+              <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[hsl(var(--text-muted))]">
                 Presupuesto
               </span>
               <input
-                className="w-full bg-transparent text-sm font-semibold text-[color:var(--ink)] focus:outline-none"
+                className="w-full bg-transparent text-sm font-semibold text-[hsl(var(--text))] focus:outline-none"
                 type="number"
                 min={0}
                 value={presupuesto.presupuestoObjetivo}
@@ -256,12 +256,12 @@ export default function Dashboard() {
                 }}
               />
             </label>
-            <label className="flex flex-col gap-1 rounded-2xl border border-[color:var(--line)] bg-white px-3 py-2 shadow-[0_8px_24px_-18px_rgba(26,26,26,0.4)]">
-              <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[color:var(--muted)]">
+            <label className="flex flex-col gap-1 rounded-[var(--r-md)] border border-[hsl(var(--border))] bg-white px-3 py-2 shadow-[0_8px_20px_-18px_rgba(15,23,42,0.35)]">
+              <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[hsl(var(--text-muted))]">
                 Invitados
               </span>
               <input
-                className="w-full bg-transparent text-sm font-semibold text-[color:var(--ink)] focus:outline-none"
+                className="w-full bg-transparent text-sm font-semibold text-[hsl(var(--text))] focus:outline-none"
                 type="number"
                 min={0}
                 value={presupuesto.cantidadInvitados}
@@ -299,18 +299,18 @@ export default function Dashboard() {
             onSubmit={handleSubmit}
             onCancel={editing ? () => setEditing(null) : undefined}
           />
-          <div className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--panel)] p-3 shadow-[0_12px_30px_-24px_rgba(26,26,26,0.45)] sm:rounded-3xl sm:p-5">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[color:var(--muted)] sm:text-xs">
+          <div className="rounded-[var(--r-lg)] border border-[hsl(var(--border))] bg-[hsl(var(--surface))] p-3 shadow-[0_10px_26px_-22px_rgba(15,23,42,0.35)] sm:p-5">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[hsl(var(--text-muted))] sm:text-xs">
               Filtros
             </p>
             <div className="mt-2 flex flex-wrap gap-1.5 sm:mt-3 sm:gap-2">
               {FILTROS.map((categoria) => (
                 <button
                   key={categoria}
-                  className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold transition sm:px-3 sm:py-1 sm:text-xs ${
+                  className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold transition duration-150 ease-[cubic-bezier(.2,.8,.2,1)] sm:px-3 sm:py-1 sm:text-xs ${
                     filter === categoria
-                      ? 'border-[color:var(--ink)] bg-[color:var(--ink)] text-[color:var(--bone)] shadow-sm'
-                      : 'border-[color:var(--line)] text-[color:var(--muted)] hover:border-[color:var(--ink)] hover:text-[color:var(--ink)]'
+                      ? 'border-[hsl(var(--text))] bg-[hsl(var(--text))] text-white shadow-sm'
+                      : 'border-[hsl(var(--border))] text-[hsl(var(--text-muted))] hover:border-[hsl(var(--text))] hover:text-[hsl(var(--text))]'
                   }`}
                   type="button"
                   onClick={() => setFilter(categoria)}
@@ -322,13 +322,13 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="grid gap-3 sm:gap-4">
+        <div className="grid max-w-[760px] gap-3 sm:gap-4">
           {bebidasFiltradas.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-[color:var(--line)] bg-[color:var(--panel)] p-6 text-center shadow-[0_18px_40px_-30px_rgba(26,26,26,0.45)] sm:rounded-3xl sm:p-10">
-              <p className="font-display text-xl font-semibold text-[color:var(--ink)] sm:text-2xl">
+            <div className="rounded-[var(--r-lg)] border border-dashed border-[hsl(var(--border))] bg-[hsl(var(--surface))] p-6 text-center shadow-[0_14px_32px_-26px_rgba(15,23,42,0.4)] sm:p-10">
+              <p className="font-display text-xl font-semibold text-[hsl(var(--text))] sm:text-2xl">
                 Empieza tu lista
               </p>
-              <p className="mt-1.5 text-xs text-[color:var(--muted)] sm:mt-2 sm:text-sm">
+              <p className="mt-1.5 text-xs text-[hsl(var(--text-muted))] sm:mt-2 sm:text-sm">
                 No hay bebidas cargadas. Agrega la primera en el formulario.
               </p>
             </div>
@@ -358,3 +358,5 @@ export default function Dashboard() {
     </div>
   )
 }
+
+
