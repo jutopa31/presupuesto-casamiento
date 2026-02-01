@@ -316,9 +316,10 @@ export default function Dashboard() {
                 return
               }
               setIsSendingLink(true)
+              const siteUrl = import.meta.env.VITE_SITE_URL || window.location.origin
               const { error: signInError } = await supabase.auth.signInWithOtp({
                 email,
-                options: { emailRedirectTo: window.location.origin },
+                options: { emailRedirectTo: siteUrl },
               })
               setIsSendingLink(false)
               if (signInError) {
@@ -356,13 +357,13 @@ export default function Dashboard() {
           {error}
         </div>
       ) : null}
-      <header className="rounded-[var(--r-lg)] border border-[hsl(var(--border))] bg-[hsl(var(--surface))] p-4 shadow-[0_10px_26px_-20px_rgba(15,23,42,0.35)] sm:p-6">
+      <header className="rounded-[var(--r-lg)] border border-[hsl(var(--border))] bg-[hsl(var(--surface))] p-4 shadow-[0_4px_12px_-10px_rgba(15,23,42,0.15)] sm:p-6">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div className="flex flex-col gap-2">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[hsl(var(--text-muted))] sm:text-xs">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[hsl(var(--text-muted))] sm:text-xs">
               Presupuesto de bebidas
             </p>
-            <h1 className="font-display text-2xl font-semibold text-[hsl(var(--text))] sm:text-4xl md:text-5xl">
+            <h1 className="font-display text-2xl font-semibold text-[hsl(var(--text))] sm:text-3xl md:text-4xl">
               Presupuesto Casamiento
             </h1>
             <p className="max-w-xl text-xs text-[hsl(var(--text-muted))] sm:text-sm">
@@ -370,7 +371,7 @@ export default function Dashboard() {
             </p>
           </div>
           <div className="grid w-full gap-2 sm:grid-cols-2 sm:gap-3 lg:max-w-md">
-            <label className="flex flex-col gap-1 rounded-[var(--r-md)] border border-[hsl(var(--border))] bg-white px-3 py-2 shadow-[0_8px_20px_-18px_rgba(15,23,42,0.35)]">
+            <label className="flex flex-col gap-1 rounded-[var(--r-md)] border border-[hsl(var(--border))] bg-white px-3 py-2 shadow-[0_4px_12px_-10px_rgba(15,23,42,0.2)]">
               <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[hsl(var(--text-muted))]">
                 Presupuesto
               </span>
@@ -394,7 +395,7 @@ export default function Dashboard() {
                 }}
               />
             </label>
-            <label className="flex flex-col gap-1 rounded-[var(--r-md)] border border-[hsl(var(--border))] bg-white px-3 py-2 shadow-[0_8px_20px_-18px_rgba(15,23,42,0.35)]">
+            <label className="flex flex-col gap-1 rounded-[var(--r-md)] border border-[hsl(var(--border))] bg-white px-3 py-2 shadow-[0_4px_12px_-10px_rgba(15,23,42,0.2)]">
               <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[hsl(var(--text-muted))]">
                 Invitados
               </span>
@@ -420,7 +421,7 @@ export default function Dashboard() {
             </label>
           </div>
         </div>
-        <div className="mt-4 flex justify-end">
+        <div className="mt-3 flex justify-end">
           <button
             className="rounded-full border border-[hsl(var(--border))] bg-white px-3 py-1.5 text-[10px] font-semibold text-[hsl(var(--text-muted))] transition hover:border-[hsl(var(--text))] hover:text-[hsl(var(--text))] sm:text-xs"
             type="button"
