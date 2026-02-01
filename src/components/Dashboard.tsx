@@ -104,9 +104,9 @@ export default function Dashboard() {
         .select('*')
         .eq('slug', presupuestoSlug)
         .eq('user_id', session.user.id)
-        .single()
+        .maybeSingle()
 
-      if (presupuestoError && presupuestoError.code !== 'PGRST116') {
+      if (presupuestoError) {
         if (isActive) {
           setError('No se pudo cargar el presupuesto desde Supabase.')
           setIsLoading(false)
